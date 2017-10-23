@@ -1,8 +1,9 @@
-classes= 80
-train  = /home/pjreddie/data/coco/trainvalno5k.txt
+classes= 30
+# train  = /home/pjreddie/data/coco/trainvalno5k.txt
+train  = /home/xbn/work/gitwork/BDCI2017_logo_recognition/dataset/train_images/trainvalno.txt
 #valid  = coco_testdev
 valid = data/coco_val_5k.list
-names = data/coco.names
-backup = /home/pjreddie/backup/
+names = data/bdci2017_logo.names
+backup = backup/
 eval=coco
 
