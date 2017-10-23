@@ -1,7 +1,7 @@
 #include "darknet.h"
 
-char *voc_names[] = {"aeroplane", "bicycle", "bird", "boat", "bottle", "bus", "car", "cat", "chair", "cow", "diningtable", "dog", "horse", "motorbike", "person", "pottedplant", "sheep", "sofa", "train", "tvmonitor"};
-
+// char *voc_names[] = {"aeroplane", "bicycle", "bird", "boat", "bottle", "bus", "car", "cat", "chair", "cow", "diningtable", "dog", "horse", "motorbike", "person", "pottedplant", "sheep", "sofa", "train", "tvmonitor"};
+char *voc_names[] = {"jeep", "jeep1", "丰田", "保时捷", "凯迪拉克", "别克", "北汽", "吉利", "吉利1", "名爵", "启辰", "哈弗", "大众", "奇瑞", "奔驰", "奥迪", "宝马", "宝骏", "广汽传祺", "斯柯达", "日产", "本田", "林肯", "福特", "荣威", "起亚", "路虎", "铃木", "长安", "雷克萨斯", "雷诺", "马自达"};
 void train_yolo(char *cfgfile, char *weightfile)
 {
     char *train_images = "/data/voc/train.txt";
