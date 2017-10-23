@@ -7,7 +7,6 @@
 *.pyc
 old/
 mnist/
-data/
 dataset/
 caffe/
 grasp/
@@ -16,7 +15,6 @@ opencv/
 convnet/
 decaf/
 submission/
-cfg/
 darknet
 .fuse*
 
