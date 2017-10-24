@@ -2,7 +2,7 @@
 echo ""
 echo "----------test finished------------"
 echo ""
-baidupcs upload -f predictions.png prefictions/$1
+baidupcs upload -f predictions.png /prefictions/$1
 echo ""
 echo "---------upload finished------------"
 echo ""

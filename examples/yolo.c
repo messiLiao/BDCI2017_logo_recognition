@@ -2,7 +2,8 @@
 
 // char *voc_names[] = {"aeroplane", "bicycle", "bird", "boat", "bottle", "bus", "car", "cat", "chair", "cow", "diningtable", "dog", "horse", "motorbike", "person", "pottedplant", "sheep", "sofa", "train", "tvmonitor"};
 // char *voc_names[] = {"jeep", "jeep1", "丰田", "保时捷", "凯迪拉克", "别克", "北汽", "吉利", "吉利1", "名爵", "启辰", "哈弗", "大众", "奇瑞", "奔驰", "奥迪", "宝马", "宝骏", "广汽传祺", "斯柯达", "日产", "本田", "林肯", "福特", "荣威", "起亚", "路虎", "铃木", "长安", "雷克萨斯", "雷诺", "马自达"};
-char *voc_names[] = {"北汽","福特","斯柯达","启辰","本田","日产","凯迪拉克","铃木","吉利1","保时捷","jeep1","宝骏","荣威","林肯","丰田","别克","奇瑞","起亚","哈弗","奥迪","路虎","大众","广汽传祺","长安","名爵","雷诺","雷克萨斯","宝马","马自达","奔驰"};
+// char *voc_names[] = {"北汽","福特","斯柯达","启辰","本田","日产","凯迪拉克","铃木","吉利1","保时捷","jeep1","宝骏","荣威","林肯","丰田","别克","奇瑞","起亚","哈弗","奥迪","路虎","大众","广汽传祺","长安","名爵","雷诺","雷克萨斯","宝马","马自达","奔驰"};
+char *voc_names[] = {"beiqi", "ford", "skoda", "qichen", "honda", "nissan", "cadillac", "suzuke", "geeli1", "porsche", "jeep1", "baojun", "roewe", "lincoln", "toyota", "buick", "chery", "kia", "haval", "audi", "landrover", "volkswagen", "trumpchi", "changan", "MG", "renault", "lexus", "BMW", "maxda", "benz"};
 void train_yolo(char *cfgfile, char *weightfile)
 {
     char *train_images = "/data/voc/train.txt";
