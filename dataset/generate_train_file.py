@@ -37,8 +37,8 @@ def main(argv):
                     x1, y1, x2, y2 = sub_item['bbox']
                     cx = (x1 + x2) / 2.0 / w
                     cy = (y1 + y2) / 2.0 / h
-                    cw = abs(x2 - x1) * 1.0 / w + 20
-                    ch = abs(y2 - y1) * 1.0 / h + 20
+                    cw = abs(x2 - x1) * 1.0 / w + 10
+                    ch = abs(y2 - y1) * 1.0 / h + 10
                     line = '{0} {1} {2} {3} {4}\n'.format(sub_item_class,
                                                           cx, cy, cw, ch)
 

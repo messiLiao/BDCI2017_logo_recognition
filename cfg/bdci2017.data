@@ -6,5 +6,5 @@ train  = /home/xbn/work/gitwork/BDCI2017_logo_recognition/dataset/train_images/t
 valid = /home/xbn/work/gitwork/BDCI2017_logo_recognition/dataset/train_images/trainvalno.txt
 names = data/bdci2017_logo.names
 backup = backup/
-eval=coco
+eval=bdci
 
