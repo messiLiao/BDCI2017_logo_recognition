@@ -170,28 +170,29 @@ def cross_rect_area(p1_tl, p1_br, p2_tl, p2_br):
 	return rate
 	pass
 
-def show_test_result(test_result_fn):
-	result_list = []
-	with open(test_result_fn, 'r') as fd:
-		result_list = fd.readlines()
-
+def show_test_result(test_result_fn_list, threshold, image_show_enable, print_enable, save_to_file):
 	result_dict = dict({})
-	save_to_file = True
 	output_filename = "preliminary_result.json"
-	image_show_enable = False
-	print_enable = False
-	no_object_count = 0
-	for line in result_list:
-		if line.find('Unable') >= 0:
-			continue
-		fn, class_id, prob, x1, y1, x2, y2 = line.split(' ')[:7]
-		class_id, prob, x1, y1, x2, y2 = int(class_id), float(prob), int(x1), int(y1), int(x2), int(y2)
-		# print fn, class_id, prob, x1, y1, x2, y2
-		_, image_fn = os.path.split(fn)
-		# print image_fn
-		if image_fn not in result_dict:
-			result_dict[image_fn] = []
-		result_dict[image_fn].append((class_id, prob, x1, y1, x2, y2))
+
+	for test_result_fn in test_result_fn_list:
+		result_list = []
+		with open(test_result_fn, 'r') as fd:
+			result_list = fd.readlines()
+
+		no_object_count = 0
+		for line in result_list:
+			if line.find('Unable') >= 0:
+				continue
+			if line.find("skip") >= 0:
+				continue
+			fn, class_id, prob, x1, y1, x2, y2 = line.split(' ')[:7]
+			class_id, prob, x1, y1, x2, y2 = int(class_id), float(prob), int(x1), int(y1), int(x2), int(y2)
+			# print fn, class_id, prob, x1, y1, x2, y2
+			_, image_fn = os.path.split(fn)
+			# print image_fn
+			if image_fn not in result_dict:
+				result_dict[image_fn] = []
+			result_dict[image_fn].append((class_id, prob, x1, y1, x2, y2))
 
 		# break
 	print 'image count=', len(result_dict)
@@ -215,7 +216,7 @@ def show_test_result(test_result_fn):
 		if print_enable:
 			print "=========", image_fn, "=="
 			print "items:", items
-		items = [(class_id, prob, x1, y1, x2, y2) for class_id, prob, x1, y1, x2, y2 in items if prob > 0.3]
+		items = [(class_id, prob, x1, y1, x2, y2) for class_id, prob, x1, y1, x2, y2 in items if prob > threshold]
 		if len(items) < 1:
 			no_object_count += 1
 			continue
@@ -302,7 +303,12 @@ if __name__ == '__main__':
 	# cv2.imshow("pre", image)
 	# cv2.imshow("sub", sub_image)
 	# cv2.waitKey(0)
-	show_test_result("../preliminary_predict.txt")
+	save_to_file = True
+	image_show_enable = False
+	print_enable = False
+	threshold = 0.31
+	result_file_list = ["../preliminary_predict_3.txt", "../preliminary_predict_2.txt", "../preliminary_predict.txt"]
+	show_test_result(result_file_list, threshold, image_show_enable, print_enable, save_to_file)
 	p1_tl, p1_br, p2_tl, p2_br = (287, 104), (351, 169), (291, 106), (342, 167)
 	# print cross_rect_area((4, 1.2), (0, 0), (1, 1), (3, 3))
 	# print cross_rect_area(p1_tl, p1_br, p2_tl, p2_br)
