@@ -1,4 +1,11 @@
 name: "Car_Logo_512x512_ResNet"
+
+input: "data"
+input_dim: 1
+input_dim: 3
+input_dim: 512
+input_dim: 512
+
 layer {
   name: "data"
   type: "AnnotatedData"
@@ -132,9 +139,86 @@ layer {
   }
 }
 # -----------^^^^^^data^^^^^^^^^^-----------------
-
+##--VV--pool0
 layer {
+  name: "conv1_1"
+  type: "Convolution"
   bottom: "data"
+  top: "conv1_1"
+  param {
+    lr_mult: 1.0
+    decay_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+    decay_mult: 0.0
+  }
+  convolution_param {
+    num_output: 32
+    pad: 1
+    kernel_size: 3
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+      value: 0.0
+    }
+  }
+}
+layer {
+  name: "relu1_1"
+  type: "ReLU"
+  bottom: "conv1_1"
+  top: "conv1_1"
+}
+layer {
+  name: "conv1_2"
+  type: "Convolution"
+  bottom: "conv1_1"
+  top: "conv1_2"
+  param {
+    lr_mult: 1.0
+    decay_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+    decay_mult: 0.0
+  }
+  convolution_param {
+    num_output: 32
+    pad: 1
+    kernel_size: 3
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+      value: 0.0
+    }
+  }
+}
+layer {
+  name: "relu1_2"
+  type: "ReLU"
+  bottom: "conv1_2"
+  top: "conv1_2"
+}
+layer {
+  name: "pool0"
+  type: "Pooling"
+  bottom: "conv1_2"
+  top: "pool0"
+  pooling_param {
+    pool: MAX
+    kernel_size: 2
+    stride: 2
+  }
+}
+#---^^--pool0-
+#----res1a--VV--
+layer {
+  bottom: "pool0"
   top: "res1a_branch2a"
   name: "res1a_branch2a"
   type: "Convolution"
@@ -249,7 +333,7 @@ layer {
   }
 }
 layer {
-  bottom: "data"
+  bottom: "pool0"
   bottom: "res1a_branch2c"
   top: "res1a"
   name: "res1a"
