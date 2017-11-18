@@ -7,7 +7,6 @@
 *.pyc
 old/
 mnist/
-dataset/
 caffe/
 grasp/
 images/
