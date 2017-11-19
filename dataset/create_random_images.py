@@ -156,20 +156,19 @@ def perspective(image, mask, min_side, max_side):
 
 def exposure_image(image):
     hsv = cv2.cvtColor(image,cv2.COLOR_RGB2HSV)
-    print hsv.shape
     h, s, v = cv2.split(hsv)
     if random.random() < 0.5:
-        rate = (random.random() + 1) * (256 / np.max(v))
+        rate = (random.random() + 1) * min((256 / (np.max(v) + 1)), 10)
     else:
-        rate = random.random()
+        rate = random.random() + 0.05
     nv = v * rate
     nv[nv > 255] = 255    
     v = nv.astype(np.uint8)
 
     if random.random() < 0.5:
-        rate = (random.random() + 1) * (256 / np.max(v))
+        rate = (random.random() + 1) * min((256 / (np.max(s) + 1)), 10)
     else:
-        rate = random.random()
+        rate = random.random() + 0.05
     ns = s * rate
     ns[ns > 255] = 255    
     s = ns.astype(np.uint8)
@@ -191,7 +190,7 @@ def merge_background(image, mask, bg_image):
     sub_bg_image[mask > 0] = (0, 0, 0)
     image[mask == 0] = (0, 0, 0)
     sub_bg_image += image
-    bbox = (pos_y, pos_x, mh+pos_y, mw+pos_x)
+    bbox = (pos_x, pos_y, mw+pos_x, mh+pos_y)
     return bg_image, bbox
     pass
 
@@ -211,7 +210,7 @@ def get_random_alpha_str(length):
 
 def SynthProcess(image_fn, mask_fn, bg_image_fn, output_dir, class_id):    
 
-    min_side = 30
+    min_side = 20
     max_side = 100
     min_kernel_size = 1
     max_kernel_size = 15
@@ -249,8 +248,8 @@ def SynthProcess(image_fn, mask_fn, bg_image_fn, output_dir, class_id):
     cv2.imwrite(output_image_fn, output_image)
     line = None
     with open(output_label_fn, 'w') as fd:
-        line = "%s %d " % (os.path.split(output_image_fn)[1], class_id)
-        line += "%d %d %d %d" % bbox
+        line = "%d " % class_id
+        line += "%d %d %d %d\n" % bbox
         fd.write(line)
     return result
 
@@ -431,8 +430,8 @@ def main(image_dir, mask_dir, background_dir, output_dir, generate_cnt, debug=Fa
             if key in [ord('q'), 23]:
                 break
         with open(output_label_fn, 'w') as fd:
-            line = "%s %d " % (os.path.split(output_image_fn)[1], class_id)
-            line += "%d %d %d %d" % bbox
+            line = "%d " % class_id
+            line += "%d %d %d %d\n" % bbox
             fd.write(line)
         list_output_fd.write("%s %s\n" % (os.path.join(image_output_name, os.path.split(output_image_fn)[1]),
                                         os.path.join(label_output_name, os.path.split(output_label_fn)[1])))
@@ -452,7 +451,7 @@ if __name__ == '__main__':
     mask_dir = './logos_mask'
     background_dir = '/home/xbn/work/data/background_images'
     output_dir = '/home/xbn/work/kongchang/data'
-    generate_cnt = 10
+    generate_cnt = 10000
 
 
     # main(image_dir, mask_dir, background_dir, output_dir, generate_cnt, debug=True)
