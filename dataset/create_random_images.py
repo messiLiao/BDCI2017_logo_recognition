@@ -134,6 +134,9 @@ def erode_or_dilate_mask(mask, min_kernel_size, max_kernel_size):
     mask = function(mask, kernel)
     return mask
 
+def contrast(image, min_rate, max_rate):
+    pass
+
 def perspective(image, mask, min_side, max_side):
     h, w = mask.shape
     nh, nw = random.randint(min_side, max_side), random.randint(min_side, max_side)
@@ -151,8 +154,30 @@ def perspective(image, mask, min_side, max_side):
     return image, mask
     
 
-def exposure_image(image, min_expose_rate, max_expose_rate):
-    pass
+def exposure_image(image):
+    hsv = cv2.cvtColor(image,cv2.COLOR_RGB2HSV)
+    print hsv.shape
+    h, s, v = cv2.split(hsv)
+    if random.random() < 0.5:
+        rate = (random.random() + 1) * (256 / np.max(v))
+    else:
+        rate = random.random()
+    nv = v * rate
+    nv[nv > 255] = 255    
+    v = nv.astype(np.uint8)
+
+    if random.random() < 0.5:
+        rate = (random.random() + 1) * (256 / np.max(v))
+    else:
+        rate = random.random()
+    ns = s * rate
+    ns[ns > 255] = 255    
+    s = ns.astype(np.uint8)
+
+
+    hsv = cv2.merge((h, s, v))
+
+    image = cv2.cvtColor(hsv,cv2.COLOR_HSV2RGB)
     return image
 
 def merge_background(image, mask, bg_image):
@@ -206,6 +231,8 @@ def SynthProcess(image_fn, mask_fn, bg_image_fn, output_dir, class_id):
     mask = erode_or_dilate_mask(mask, min_kernel_size, max_kernel_size)
 
     image, mask = perspective(image, mask, min_side, max_side)
+
+    image = exposure_image(image)
 
     output_image, bbox = merge_background(image, mask, bg_image)
 
@@ -381,6 +408,7 @@ def main(image_dir, mask_dir, background_dir, output_dir, generate_cnt, debug=Fa
 
         # image, mask = scale_image(image, mask, min_side, max_side)
         image, mask = perspective(image, mask, min_side, max_side)
+        image = exposure_image(image)
         if debug:
             cv2.imshow("image", image)
             cv2.imshow("mask", mask)
@@ -420,11 +448,13 @@ if __name__ == '__main__':
     output_dir = '.'
     generate_cnt = 10
 
-    # image_dir = './logos'
-    # mask_dir = './logos_mask'
-    # background_dir = './background_images'
-    # output_dir = '/home/xbn/work/kongchang/data'
-    # generate_cnt = 10
+    image_dir = './logos'
+    mask_dir = './logos_mask'
+    background_dir = '/home/xbn/work/data/background_images'
+    output_dir = '/home/xbn/work/kongchang/data'
+    generate_cnt = 10
 
-    # main(image_dir, mask_dir, background_dir, output_dir, generate_cnt, debug=False)
+
+    # main(image_dir, mask_dir, background_dir, output_dir, generate_cnt, debug=True)
     generate_syntm_images(image_dir, mask_dir, background_dir, output_dir, generate_cnt, debug=True)
+    
