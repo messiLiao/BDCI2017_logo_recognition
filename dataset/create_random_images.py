@@ -301,6 +301,8 @@ def generate_syntm_images(image_dir, mask_dir, background_dir, output_dir, gener
         line = result.get()
         if line is not None:
             list_output_fd.write(line)
+        if image_cnt % 1000 == 0:
+            print "image count = %6d." % image_cnt
         image_cnt += 1
 
     pool.close()
