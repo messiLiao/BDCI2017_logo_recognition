@@ -183,7 +183,7 @@ def get_random_alpha_str(length):
     return ''.join(s)
 
 
-def main(image_dir, mask_dir, background_dir, image_output_dir, label_output_dir, max_cnt):
+def main(image_dir, mask_dir, background_dir, output_dir, generate_cnt, debug=False):
     label_class_id = dict()
     label_class_id['beiqi'] = 1
     label_class_id['ford'] = 2
@@ -207,7 +207,7 @@ def main(image_dir, mask_dir, background_dir, image_output_dir, label_output_dir
     label_class_id['kia'] = 18
     label_class_id['haval'] = 19
     label_class_id['audi'] = 20
-    label_class_id['landrover'] = 21
+    label_class_id['randrover'] = 21
     label_class_id['dasauto'] = 22
     label_class_id['chuanqi'] = 23
     label_class_id['changan'] = 24
@@ -216,7 +216,13 @@ def main(image_dir, mask_dir, background_dir, image_output_dir, label_output_dir
     label_class_id['lexs'] = 27
     label_class_id['bmw'] = 28
     label_class_id['mazida'] = 29
-    label_class_id['banz'] = 30
+    label_class_id['benz'] = 30
+
+    image_output_name = "synth_images"
+    label_output_name = "synth_labels"
+    image_output_dir = os.path.join(output_dir, image_output_name)
+    label_output_dir = os.path.join(output_dir, label_output_name)
+    list_output_fn = os.path.join(output_dir, "synth_logo_list.txt")
 
     image_fn_list = os.listdir(image_dir)
     bg_image_fn_list = os.listdir(background_dir)
@@ -230,7 +236,8 @@ def main(image_dir, mask_dir, background_dir, image_output_dir, label_output_dir
     if not os.path.isdir(label_output_dir):
         os.mkdir(label_output_dir)
     image_cnt = 0
-    while image_cnt < max_cnt:
+    list_output_fd = open(list_output_fn, 'w')
+    while image_cnt < generate_cnt:
         image_cnt += 1
         # for image_fn in image_fn_list:
         image_fn = random.choice(image_fn_list)
@@ -245,30 +252,49 @@ def main(image_dir, mask_dir, background_dir, image_output_dir, label_output_dir
 
         # image, mask = scale_image(image, mask, min_side, max_side)
         image, mask = perspective(image, mask, min_side, max_side)
-        cv2.imshow("image", image)
-        cv2.imshow("mask", mask)
-        # break
+        if debug:
+            cv2.imshow("image", image)
+            cv2.imshow("mask", mask)
 
         bg_image_fn = random.choice(bg_image_fn_list)
         name, ext = os.path.splitext(bg_image_fn)
-        output_image_fn = os.path.join(image_output_dir, '%s_%s%s' % (name, get_random_alpha_str(8), ext))
-        output_label_fn = os.path.join(label_output_dir, '%s_%s.txt' % (name, get_random_alpha_str(8)))
+        random_alpha_str = get_random_alpha_str(8)
+        output_image_fn = os.path.join(image_output_dir, '%s_%s%s' % (name, random_alpha_str, ext))
+        output_label_fn = os.path.join(label_output_dir, '%s_%s.txt' % (name, random_alpha_str))
         bg_image_fn = os.path.join(background_dir, bg_image_fn)
         bg_image = cv2.imread(bg_image_fn)
         output_image, bbox = merge_background(image, mask, bg_image)
         print bbox, class_id
-        cv2.imshow("bg_image", output_image)
         cv2.imwrite(output_image_fn, output_image)
-        key = cv2.waitKey(0) & 255
-        if key in [ord('q'), 23]:
-            break
+        if debug:
+            cv2.imshow("image", image)
+            cv2.imshow("mask", mask)
+            cv2.imshow("bg_image", output_image)
+            key = cv2.waitKey(0) & 255
+            if key in [ord('q'), 23]:
+                break
         with open(output_label_fn, 'w') as fd:
             line = "%s %d " % (os.path.split(output_image_fn)[1], class_id)
             line += "%d %d %d %d" % bbox
             fd.write(line)
-
+        list_output_fd.write("%s %s\n" % (os.path.join(image_output_name, os.path.split(output_image_fn)[1]),
+                                        os.path.join(label_output_name, os.path.split(output_label_fn)[1])))
+    list_output_fd.close()
+    print "output files count:", generate_cnt
     pass
 
 
 if __name__ == '__main__':
-    main('./logos', 'logos_mask', './background_images', './train_images', './train_labels', 10)
+    image_dir = './logos'
+    mask_dir = './logos_mask'
+    background_dir = './background_images'
+    output_dir = './'
+    generate_cnt = 100
+
+    # image_dir = './logos'
+    # mask_dir = './logos_mask'
+    # background_dir = './background_images'
+    # output_dir = '/home/xbn/work/kongchang/data'
+    # generate_c nt = 10
+
+    main(image_dir, mask_dir, background_dir, output_dir, generate_cnt, debug=False)
