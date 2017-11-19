@@ -285,7 +285,6 @@ def generate_syntm_images(image_dir, mask_dir, background_dir, output_dir, gener
     list_output_fn = os.path.join(output_dir, "synth_logo_list.txt")
     list_output_fd = open(list_output_fn, 'w')
     while image_cnt < generate_cnt:
-        image_cnt += 1
         image_fn = random.choice(image_fn_list)
 
         name, ext = os.path.splitext(image_fn)
@@ -300,7 +299,9 @@ def generate_syntm_images(image_dir, mask_dir, background_dir, output_dir, gener
         
         result = pool.apply_async(SynthProcess, (image_fn, mask_fn, bg_image_fn, output_dir, class_id))
         line = result.get()
-        list_output_fd.write(line)
+        if line is not None:
+            list_output_fd.write(line)
+        image_cnt += 1
 
     pool.close()
     pool.join()
