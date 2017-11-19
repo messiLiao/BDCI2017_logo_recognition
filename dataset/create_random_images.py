@@ -54,7 +54,7 @@ def region_select(image_fn):
         elif event ==cv2.EVENT_MOUSEMOVE:
             if last_point is not None:
                 pass
-            tmp_image = np.copy(image)    
+            tmp_image = np.copy(image)
             cv2.rectangle(tmp_image, (last_point[0], last_point[1]), (x, y), (0, 255, 0), 2)
             rectangle[:] = last_point[0], last_point[1], x, y
             cv2.imshow("origin", tmp_image)
@@ -87,7 +87,7 @@ def cut_image_and_mask(image_fn, mask_fn, rectangle):
 def crop_image():
     # region_select('./logos/beiqi.jpg')
     # cut_image_and_mask('./logos/beiqi.jpg', './logos_mask/beiqi.bmp', (374, 205, 134, 18))
-    
+
     # region_select('./logos/ford.jpg')
     # cut_image_and_mask('./logos/ford.jpg', './logos_mask/ford.bmp', (1019,  727, 2, 297))
 
@@ -96,22 +96,22 @@ def crop_image():
 
     # region_select('./logos/posche.jpg')
     # cut_image_and_mask('./logos/posche.jpg', './logos_mask/posche.bmp', (439, 418, 155, 103))
-    
+
     # region_select('./logos/mazida.jpg')
     # cut_image_and_mask('./logos/mazida.jpg', './logos_mask/mazida.bmp', (452, 380, 126, 105))
-    
+
     # region_select('./logos/kia.jpg')
     # cut_image_and_mask('./logos/kia.jpg', './logos_mask/kia.bmp', (496, 328, 114, 101))
-    
+
     # region_select('./logos/geely.jpg')
     # cut_image_and_mask('./logos/geely.jpg', './logos_mask/geely.bmp', (629, 532, 126, 43))
-    
+
     # region_select('./logos/mg.jpg')
     # cut_image_and_mask('./logos/mg.jpg', './logos_mask/mg.bmp', (436, 330, 159, 60))
-    
+
     # region_select('./logos/linken.jpg')
     # cut_image_and_mask('./logos/linken.jpg', './logos_mask/linken.bmp', (219, 252, 65, 12))
-    
+
     # region_select('./logos/skoda.jpg')
     # cut_image_and_mask('./logos/skoda.jpg', './logos_mask/skoda.bmp', (188, 214, 9, 53))
     pass
@@ -152,25 +152,27 @@ def perspective(image, mask, min_side, max_side):
     mask = cv2.warpPerspective(mask,
                                trans_mat, (nw, nh))
     return image, mask
-    
+
 
 def exposure_image(image):
     hsv = cv2.cvtColor(image,cv2.COLOR_RGB2HSV)
     h, s, v = cv2.split(hsv)
     if random.random() < 0.5:
-        rate = (random.random() + 1) * min((256 / (np.max(v) + 1)), 10)
+        # rate = (random.random() + 1) * min((256 / (np.max(v) + 1)), 2)
+        rate = (random.random() + 1) * 2
     else:
-        rate = random.random() + 0.05
+        rate = random.random() * 0.8 + 0.2
     nv = v * rate
-    nv[nv > 255] = 255    
+    nv[nv > 255] = 255
     v = nv.astype(np.uint8)
 
     if random.random() < 0.5:
-        rate = (random.random() + 1) * min((256 / (np.max(s) + 1)), 10)
+        # rate = (random.random() + 1) * min((256 / (np.max(s) + 1)), 2)
+        rate = (random.random() + 1) * 2
     else:
-        rate = random.random() + 0.05
+        rate = random.random() * 0.8 + 0.2
     ns = s * rate
-    ns[ns > 255] = 255    
+    ns[ns > 255] = 255
     s = ns.astype(np.uint8)
 
 
@@ -451,9 +453,9 @@ if __name__ == '__main__':
     mask_dir = './logos_mask'
     background_dir = '/home/xbn/work/data/background_images'
     output_dir = '/home/xbn/work/kongchang/data'
-    generate_cnt = 10000
+    generate_cnt = 5000
 
 
     # main(image_dir, mask_dir, background_dir, output_dir, generate_cnt, debug=True)
     generate_syntm_images(image_dir, mask_dir, background_dir, output_dir, generate_cnt, debug=True)
-    
+
